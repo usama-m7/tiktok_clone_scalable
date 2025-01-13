@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="upload-container">
+    <div class="upload-card">
+        <div class="upload-header">
+            <h2><i class="fas fa-cloud-upload-alt"></i> Upload Video</h2>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="upload-form" id="upload-form">
+            <div class="upload-preview">
+                <div id="preview-container">
+                    <i class="fas fa-video"></i>
+                    <p>Preview will appear here</p>
+                </div>
+                <video id="video-preview" style="display: none;" controls></video>
+            </div>
+            
+            <div class="form-group">
+                <div class="custom-file-upload">
+                    <input type="file" name="video" id="video-upload" accept="video/*" required>
+                    <label for="video-upload">
+                        <i class="fas fa-plus"></i>
+                        Select Video
+                    </label>
+                </div>
+                <small
+                    class="text-danger">Maximum file size: 100MB</small>
+                <div id="file-error" class="alert alert-danger" style="display: none;"></div>
+            </div>
+
+            <div class="form-group mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-comment"></i></span>
+                    <textarea class="form-control" name="caption" placeholder="Add a caption..." rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                    <input type="text" class="form-control" name="hashtags" placeholder="Add hashtags (e.g., #funny #viral)">
+                </div>
+                <small class="form-text">Separate hashtags with spaces</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-upload"></i> Upload Video
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.getElementById('video-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const maxSize = 100 * 1024 * 1024; // 100MB in bytes
+    const errorDiv = document.getElementById('file-error');
+    
+    if (file) {
+        if (file.size > maxSize) {
+            errorDiv.textContent = 'File size exceeds 100MB limit. Please choose a smaller file.';
+            errorDiv.style.display = 'block';
+            this.value = ''; // Clear the file input
+            return;
+        }
+        
+        errorDiv.style.display = 'none';
+        const preview = document.getElementById('video-preview');
+        const previewContainer = document.getElementById('preview-container');
+        
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+        previewContainer.style.display = 'none';
+        
+        preview.onload = function() {
+            URL.revokeObjectURL(preview.src);
+        }
+    }
+});
+
+// Add form submit validation
+document.getElementById('upload-form').addEventListener('submit', function(e) {
+    const fileInput = document.getElementById('video-upload');
+    const maxSize = 100 * 1024 * 1024; // 100MB in bytes
+    const errorDiv = document.getElementById('file-error');
+    
+    if (fileInput.files.length > 0 && fileInput.files[0].size > maxSize) {
+        e.preventDefault();
+        errorDiv.textContent = 'File size exceeds 100MB limit. Please choose a smaller file.';
+        errorDiv.style.display = 'block';
+    }
+});
+</script>
+{% endblock %}

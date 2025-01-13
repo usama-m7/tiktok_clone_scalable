@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="edit-profile-container">
+    <div class="edit-profile-card">
+        <div class="edit-profile-header">
+            <h2><i class="fas fa-user-edit"></i> Edit Profile</h2>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="edit-profile-form">
+            <div class="current-profile-pic">
+                <img src="{{ current_user.profile_pic }}" 
+                     alt="Current Profile Picture" id="profile-preview">
+            </div>
+            
+            <div class="form-group">
+                <div class="custom-file-upload">
+                    <input type="file" name="profile_pic" id="profile-pic-upload" accept="image/*">
+                    <label for="profile-pic-upload">
+                        <i class="fas fa-camera"></i>
+                        Change Profile Picture
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input type="text" class="form-control" value="{{ current_user.username }}" disabled>
+                </div>
+                <small class="form-text text-muted">Username cannot be changed</small>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    <input type="email" class="form-control" value="{{ current_user.email }}" disabled>
+                </div>
+                <small class="form-text text-muted">Email cannot be changed</small>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-info-circle"></i></span>
+                    <textarea class="form-control" name="bio" rows="3" placeholder="Tell us about yourself">{{ current_user.bio or '' }}</textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.getElementById('profile-pic-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('profile-preview').src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}
